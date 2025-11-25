@@ -7,6 +7,7 @@ public record UserDetailsDTO(
         String email,
         long phoneNumber,
         String password,
+        String confirmPassword,
         Date dateOfBirth
 ) {
 }
