@@ -4,6 +4,7 @@ import com.joblog.JobLog.mapper.UserMapper;
 import com.joblog.JobLog.model.UserDetails;
 import com.joblog.JobLog.model.UserDetailsDTO;
 import com.joblog.JobLog.service.UserDetailsService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class UserRestController {
     @PostMapping("/user")
     public ResponseEntity<String> createUser(@RequestBody UserDetailsDTO userDetailsDTO){
         UserDetails userDetails1 =  userService.createUser(userDetailsDTO);
-        return new ResponseEntity<>("User Created", HttpStatus.CREATED);
+        return new ResponseEntity<>(userDetailsDTO.name(), HttpStatus.CREATED);
     }
 
     @PutMapping("/user")
@@ -35,7 +36,7 @@ public class UserRestController {
     }
 
     @GetMapping("/user/{userName}")
-    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable String userName){
+    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable String userName, @RequestHeader(name="token", required = false) String token){
         UserDetails userDetails = userService.getUserDetails(userName);
         UserDetailsDTO userDetailsDTO = userMapper.toDto(userDetails);
         return new ResponseEntity<>(userDetailsDTO,HttpStatus.OK);

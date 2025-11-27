@@ -9,8 +9,8 @@ servers:
 paths:
   /user/{userName}:
     get:
-      summary: Fetch user details by username
-      description: Returns a user's full details based on the userName
+      summary: Fetch user details
+      description: This api fetches the user details for the provided username(email)
       operationId: getUser
       tags:
         - user
@@ -30,15 +30,46 @@ paths:
                 $ref: '#/components/schemas/UserDetailsDTO'
         404:
           description: User not found
+  /user:
+    post:
+      summary: Signup
+      description: This API is used to create user
+      operationId: createUser
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetailsDTO'
+      responses:
+        200:
+          description: User details created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: name of the user
+        400:
+          description: user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionHandlerDTO'
 
 components:
   schemas:
     UserDetailsDTO:
       type: object
       properties:
-        userName:
+        name:
           type: string
         email:
+          description: Email of the user
           type: string
         phoneNumber:
           type: string
@@ -47,4 +78,21 @@ components:
         confirmPassword:
           type: string
         dateOfBirth:
-          type: date
+          type: string
+          format: date
+    LoginDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    ExceptionHandlerDTO:
+      type: object
+      properties:
+        status:
+          type: int
+        message:
+          type: string
+        timestamp:
+          type: long
