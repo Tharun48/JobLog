@@ -63,15 +63,22 @@ public class UserDetailsService {
         //have to find if there exists user with the same username
         UserDetails existingUser = userDetailsInterface.findByEmail(userDetails.getEmail());
         if(existingUser==null) {
-            throw new UserNotFoundException("user does not exist with the username" + userDetails.getEmail() + " to modify the details");
+            throw new UserNotFoundException("user does not exist with the username " + userDetails.getEmail() + " to modify the details");
         }
         return userDetailsInterface.save(userDetails);
     }
 
     public UserDetails getUserDetails(String userName){
         UserDetails userDetails = userDetailsInterface.findByEmail(userName);
-        if(userDetails==null) throw new UserNotFoundException("user does not exist with the username" + userName);
+        if(userDetails==null) throw new UserNotFoundException("user does not exist with the username " + userName);
         return userDetails;
+    }
+
+    public String deleteUser(String userName){
+        UserDetails userDetails = getUserDetails(userName);
+        String name = userDetails.getName();
+        userDetailsInterface.delete(userDetails);
+        return name;
     }
 
 

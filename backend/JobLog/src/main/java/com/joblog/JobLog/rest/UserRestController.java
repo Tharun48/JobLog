@@ -1,6 +1,7 @@
 package com.joblog.JobLog.rest;
 
 import com.joblog.JobLog.mapper.UserMapper;
+import com.joblog.JobLog.model.MessageDTO;
 import com.joblog.JobLog.model.UserDetails;
 import com.joblog.JobLog.model.UserDetailsDTO;
 import com.joblog.JobLog.service.UserDetailsService;
@@ -23,9 +24,10 @@ public class UserRestController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<String> createUser(@RequestBody UserDetailsDTO userDetailsDTO){
+    public ResponseEntity<MessageDTO> createUser(@RequestBody UserDetailsDTO userDetailsDTO){
         UserDetails userDetails1 =  userService.createUser(userDetailsDTO);
-        return new ResponseEntity<>(userDetailsDTO.name(), HttpStatus.CREATED);
+        MessageDTO messageDTO = new MessageDTO(userDetailsDTO.name(),"user created successfully");
+        return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/user")
@@ -41,5 +43,13 @@ public class UserRestController {
         UserDetailsDTO userDetailsDTO = userMapper.toDto(userDetails);
         return new ResponseEntity<>(userDetailsDTO,HttpStatus.OK);
     }
+
+    @DeleteMapping("/user/{userName}")
+    public ResponseEntity<MessageDTO> deleteUser(@PathVariable String userName){
+        String name = userService.deleteUser(userName);
+        MessageDTO messageDTO = new MessageDTO(name,"user deleted successfully");
+        return new ResponseEntity<>(messageDTO,HttpStatus.OK);
+    }
+
 
 }
