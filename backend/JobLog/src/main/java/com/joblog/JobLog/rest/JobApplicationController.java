@@ -1,16 +1,11 @@
 package com.joblog.JobLog.rest;
 
-import com.joblog.JobLog.JobLogApplication;
 import com.joblog.JobLog.mapper.ApplicationMapper;
-import com.joblog.JobLog.mapper.UserMapper;
 import com.joblog.JobLog.model.JobApplicationDTO;
 import com.joblog.JobLog.model.JobApplicationResponseDTO;
 import com.joblog.JobLog.model.JobApplications;
 import com.joblog.JobLog.service.ApplicationDetailsService;
-import com.joblog.JobLog.service.UserDetailsService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
