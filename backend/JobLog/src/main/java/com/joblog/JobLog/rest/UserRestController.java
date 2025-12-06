@@ -23,7 +23,7 @@ public class UserRestController {
         this.userMapper=userMapper;
     }
 
-    @PostMapping("/user")
+    @PostMapping("/user/signup")
     public ResponseEntity<MessageDTO> createUser(@RequestBody UserDetailsDTO userDetailsDTO){
         UserDetails userDetails1 =  userService.createUser(userDetailsDTO);
         MessageDTO messageDTO = new MessageDTO(userDetailsDTO.name(),"user created successfully");
@@ -49,6 +49,12 @@ public class UserRestController {
         String name = userService.deleteUser(userName);
         MessageDTO messageDTO = new MessageDTO(name,"user deleted successfully");
         return new ResponseEntity<>(messageDTO,HttpStatus.OK);
+    }
+
+    //have to implement security for this end point to get the token for the loggedin user
+    @GetMapping("/user/login")
+    public ResponseEntity<String> loginUser(@PathVariable String userName){
+        return new ResponseEntity<>("user logged in successfully",HttpStatus.OK);
     }
 
 
