@@ -30,7 +30,7 @@ public class UserRestController {
         return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping("/user")
+    @PutMapping("/user/signup")
     public ResponseEntity<String> modifyUser(@RequestBody UserDetailsDTO userDetailsDTO){
         UserDetails userDetails = userMapper.toEntity(userDetailsDTO);
         UserDetails userDetails1 =  userService.modifyUser(userDetails);
@@ -38,7 +38,7 @@ public class UserRestController {
     }
 
     @GetMapping("/user/{userName}")
-    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable String userName, @RequestHeader(name="token", required = false) String token){
+    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable String userName){
         UserDetails userDetails = userService.getUserDetails(userName);
         UserDetailsDTO userDetailsDTO = userMapper.toDto(userDetails);
         return new ResponseEntity<>(userDetailsDTO,HttpStatus.OK);
@@ -52,7 +52,7 @@ public class UserRestController {
     }
 
     //have to implement security for this end point to get the token for the loggedin user
-    @GetMapping("/user/login")
+    @GetMapping("/user/login/{userName}")
     public ResponseEntity<String> loginUser(@PathVariable String userName){
         return new ResponseEntity<>("user logged in successfully",HttpStatus.OK);
     }
