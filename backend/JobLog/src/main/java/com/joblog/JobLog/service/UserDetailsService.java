@@ -8,6 +8,8 @@ import com.joblog.JobLog.model.UserDetails;
 import com.joblog.JobLog.model.UserDetailsDTO;
 import com.joblog.JobLog.repository.UserDetailsInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
@@ -18,10 +20,12 @@ public class UserDetailsService {
 
     UserDetailsInterface userDetailsInterface;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
     @Autowired
-    UserDetailsService(UserDetailsInterface userDetailsInterface,UserMapper userMapper){
+    UserDetailsService(UserDetailsInterface userDetailsInterface, UserMapper userMapper, PasswordEncoder passwordEncoder){
         this.userDetailsInterface=userDetailsInterface;
         this.userMapper=userMapper;
+        this.passwordEncoder=passwordEncoder;
     }
 
 
@@ -48,8 +52,10 @@ public class UserDetailsService {
         if(!validatePassword(userDetailsDTO.password(),userDetailsDTO.confirmPassword())) {
             throw new PasswordMisMatchException("password mismatch or " + userDetailsDTO.password() + " is not strong");
         }
+        String hashedPassword = passwordEncoder.encode(userDetailsDTO.password());
 
         UserDetails userDetails = userMapper.toEntity(userDetailsDTO);
+        userDetails.setPassword(hashedPassword);
 
         //have to find if there exists user with the same username
         UserDetails existingUser = userDetailsInterface.findByEmail(userDetails.getEmail());
