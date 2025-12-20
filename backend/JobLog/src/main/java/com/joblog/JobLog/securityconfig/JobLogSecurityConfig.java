@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,8 +26,9 @@ public class JobLogSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((http)->http
                 .requestMatchers(HttpMethod.POST,"/user/signup").permitAll()
-                .requestMatchers(HttpMethod.GET,"/user/login/{userName}").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.POST,"/user/login").permitAll()
+                .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+                        .anyRequest().authenticated()
         );
         httpSecurity.formLogin(Customizer.withDefaults());
         httpSecurity.httpBasic(Customizer.withDefaults());
@@ -35,6 +39,16 @@ public class JobLogSecurityConfig {
     PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(JobLogUserDetailService jobLogUserDetailService,PasswordEncoder passwordEncoder) {
+        JobLogAuthenticationProvider jobLogAuthenticationProvider = new JobLogAuthenticationProvider(jobLogUserDetailService,passwordEncoder);
+        ProviderManager providerManager = new ProviderManager(jobLogAuthenticationProvider);
+        providerManager.setEraseCredentialsAfterAuthentication(false);
+        return providerManager;
+    }
+
+
 
 
 }
