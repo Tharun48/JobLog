@@ -30,4 +30,11 @@ public class ExceptionHandler {
         return  new ResponseEntity<>(e,HttpStatus.BAD_REQUEST);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler
+    public ResponseEntity<ExceptionHandlerDTO> tokentampered(TokenNotValidException r){
+        ExceptionHandlerDTO e = new ExceptionHandlerDTO(HttpStatus.UNAUTHORIZED.value(),r.getMessage(),
+                System.currentTimeMillis());
+        return  new ResponseEntity<>(e,HttpStatus.BAD_REQUEST);
+    }
+
 }
