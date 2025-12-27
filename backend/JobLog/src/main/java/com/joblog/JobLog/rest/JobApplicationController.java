@@ -55,5 +55,4 @@ public class JobApplicationController {
         return new ResponseEntity<>(applicationDTO, HttpStatus.OK);
     }
 
-
 }
