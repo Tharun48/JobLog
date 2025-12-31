@@ -32,21 +32,21 @@ public class JwtTokenValidationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("token");
         String path = request.getServletPath();
-        try{
-            String key = Application.key;
-            SecretKey secretKey =  Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
-            Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
-            String userName = claims.get("username").toString();
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userName,"",authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(request,response);
-        }
-        catch (BadCredentialsException e) {
-            throw new BadCredentialsException(e.getMessage());
-        }
-        catch (Exception e){
-            throw new TokenNotValidException("token is invalid");
+        if(token!=null) {
+            try {
+                String key = Application.key;
+                SecretKey secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
+                Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+                String userName = claims.get("username").toString();
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userName, "", authorities);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
+            } catch (BadCredentialsException e) {
+                throw new BadCredentialsException(e.getMessage());
+            } catch (Exception e) {
+                throw new TokenNotValidException("token is invalid");
+            }
         }
     }
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

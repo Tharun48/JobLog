@@ -39,8 +39,16 @@ public class JobLogSecurityConfig {
                     .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                     .requestMatchers("/error","/swagger-ui/**","/v3/api-docs/**","/swagger-ui/index.html","/favicon.ico","/swagger-ui.html").permitAll()
                     .anyRequest().authenticated()
-
         );
+
+        httpSecurity.logout(logout-> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/swagger-ui/index.html")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID").permitAll()
+        );
+
+
         httpSecurity.formLogin(Customizer.withDefaults());
         httpSecurity.httpBasic(Customizer.withDefaults());
         return httpSecurity.build();
