@@ -5,19 +5,22 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.annotation.Lazy;
 
+import java.util.Date;
+
 @Entity
 @Getter @Setter
 @Table(name="job_applications")
 public class JobApplications {
 
-    @EmbeddedId
-    JobApplicationId id;
+    int applicationId;
 
-    String status;
+    String companyName;
 
-    String resumeUrl;
+    STATUS status;
 
-    String appliedDate;
+    EVENT event;
+
+    Date appliedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="email")

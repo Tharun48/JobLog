@@ -12,16 +12,24 @@ import java.util.List;
 @Getter @Setter
 public class UserDetails {
 
+    @Id
+    int userId;
+
     String name;
 
-    @Id
     String email;
 
-    long phoneNumber;
+    String phoneNumber;
 
     String password;
 
     Date dateOfBirth;
+
+    int yearsOfExperience;
+
+    int totalApplications;
+
+    int activeApplications;
 
     @OneToMany(mappedBy = "userdetails",fetch = FetchType.LAZY)
     List<JobApplications> applications;

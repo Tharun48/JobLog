@@ -23,65 +23,7 @@ import java.util.Date;
 @RestController
 public class UserRestController {
 
-    UserDetailsService userService;
-    UserMapper userMapper;
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRestController(UserDetailsService userService, UserMapper userMapper,AuthenticationManager authenticationManager){
-        this.userService=userService;
-        this.userMapper=userMapper;
-        this.authenticationManager=authenticationManager;
-    }
-
-    @PostMapping("/user/signup")
-    public ResponseEntity<MessageDTO> createUser(@RequestBody UserDetailsDTO userDetailsDTO){
-        UserDetails userDetails1 =  userService.createUser(userDetailsDTO);
-        MessageDTO messageDTO = new MessageDTO(userDetailsDTO.name(),"user created successfully");
-        return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/user/signup")
-    public ResponseEntity<String> modifyUser(@RequestBody UserDetailsDTO userDetailsDTO){
-        UserDetails userDetails = userMapper.toEntity(userDetailsDTO);
-        UserDetails userDetails1 =  userService.modifyUser(userDetails);
-        return new ResponseEntity<>("User details modified", HttpStatus.ACCEPTED);
-    }
-
-    @GetMapping("/user/{userName}")
-    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable String userName){
-        UserDetails userDetails = userService.getUserDetails(userName);
-        UserDetailsDTO userDetailsDTO = userMapper.toDto(userDetails);
-        return new ResponseEntity<>(userDetailsDTO,HttpStatus.OK);
-    }
-
-    @DeleteMapping("/user/{userName}")
-    public ResponseEntity<MessageDTO> deleteUser(@PathVariable String userName){
-        String name = userService.deleteUser(userName);
-        MessageDTO messageDTO = new MessageDTO(name,"user deleted successfully");
-        return new ResponseEntity<>(messageDTO,HttpStatus.OK);
-    }
-
-    //have to implement security for this end point to get the token for the loggedin user
-    @PostMapping("/user/login")
-    public ResponseEntity<JWTToken> loginUser(@RequestBody LoginDTO loginDTO){
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(loginDTO.userName(),loginDTO.password());
-        Authentication authenticated =  authenticationManager.authenticate(authentication);
-        if(authenticated.isAuthenticated()) {
-            String key = Application.key;
-            SecretKey secretKey =  Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
-            String token = Jwts.builder().signWith(secretKey)
-                    .setSubject("job-log")
-                    .claim("username",loginDTO.userName())
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(new Date().getTime()+10000000))
-                    .compact();
-            JWTToken jwtToken = new JWTToken("user logged in sucessfully",token);
-            return new ResponseEntity<>(jwtToken,HttpStatus.OK);
-        }
-        JWTToken jwtToken = new JWTToken("login failed","");
-        return new ResponseEntity<>(jwtToken,HttpStatus.BAD_REQUEST);
-    }
 
 
 }

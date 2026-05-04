@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserDetailsInterface extends JpaRepository<UserDetails, String> {
+public interface UserDetailsInterface extends JpaRepository<UserDetails, Integer> {
     UserDetails findByEmail(String name);
 }
